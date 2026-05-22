@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Peer Evaluation — Fitness Nation Al Hudaiba</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; padding: 24px 16px 60px; }
+  .card { background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); max-width: 600px; margin: 0 auto; padding: 28px 24px; }
+  .branch-row { display: flex; align-items: center; gap: 10px; background: #f0f0f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 20px; }
+  .branch-row svg { flex-shrink: 0; }
+  .branch-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .branch-name { font-size: 14px; font-weight: 600; }
+  .anon { background: #eef6ff; border: 1px solid #c3dffe; border-radius: 10px; padding: 11px 14px; font-size: 13px; color: #2563eb; margin-bottom: 24px; line-height: 1.5; }
+  .page-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .page-label { font-size: 13px; color: #888; }
+  .prog-track { height: 5px; background: #e8e8e8; border-radius: 3px; margin-bottom: 22px; }
+  .prog-fill { height: 100%; border-radius: 3px; background: #16a679; transition: width 0.4s; }
+  label.field-label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 500; }
+  select, textarea { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 10px 12px; font-size: 15px; font-family: inherit; background: #fff; color: #1a1a1a; appearance: none; -webkit-appearance: none; outline: none; }
+  select:focus, textarea:focus { border-color: #16a679; box-shadow: 0 0 0 3px rgba(22,166,121,0.12); }
+  textarea { min-height: 90px; resize: vertical; }
+  .q-block { border: 1px solid #ebebeb; border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+  .q-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .q-sub { font-size: 12px; color: #888; margin-bottom: 13px; line-height: 1.4; }
+  .rating-row { display: flex; gap: 7px; }
+  .r-btn { flex: 1; padding: 9px 4px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; font-size: 13px; font-weight: 600; cursor: pointer; color: #555; text-align: center; transition: all 0.15s; }
+  .r-btn:hover { border-color: #bbb; background: #f0f0f0; }
+  .r-1.active { background: #fef2f2; border-color: #f87171; color: #b91c1c; }
+  .r-2.active { background: #fff7ed; border-color: #fb923c; color: #c2410c; }
+  .r-3.active { background: #eff6ff; border-color: #60a5fa; color: #1d4ed8; }
+  .r-4.active { background: #f0fdf4; border-color: #4ade80; color: #15803d; }
+  .r-5.active { background: #ecfdf5; border-color: #34d399; color: #065f46; }
+  .r-scale-labels { display: flex; justify-content: space-between; margin-top: 5px; font-size: 10px; color: #aaa; }
+  .btn-next { width: 100%; margin-top: 22px; padding: 13px; background: #16a679; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+  .btn-next:hover { background: #0f7a5a; }
+  .btn-next:disabled { background: #ccc; cursor: not-allowed; }
+  .err { color: #dc2626; font-size: 12px; margin-top: 8px; display: none; }
+  .section-divider { font-size: 12px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.7px; margin: 20px 0 14px; border-top: 1px solid #f0f0f0; padding-top: 16px; }
+
+  /* Done screen */
+  .done-icon { text-align: center; font-size: 52px; margin-bottom: 12px; }
+  .done-title { text-align: center; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .done-sub { text-align: center; font-size: 14px; color: #777; margin-bottom: 28px; }
+  .score-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid #f0f0f0; }
+  .score-name { font-size: 13px; font-weight: 600; min-width: 85px; text-transform: capitalize; }
+  .score-bar-wrap { flex: 1; height: 7px; background: #eee; border-radius: 4px; }
+  .score-bar { height: 100%; border-radius: 4px; background: #16a679; }
+  .score-val { font-size: 13px; color: #555; min-width: 36px; text-align: right; }
+  .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+  .metric-card { border-radius: 10px; padding: 13px; }
+  .metric-card .mlabel { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+  .metric-card .mval { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .metric-card .msub { font-size: 11px; opacity: 0.7; }
+  .mc-green { background: #ecfdf5; color: #065f46; }
+  .mc-amber { background: #fffbeb; color: #92400e; }
+  .mc-blue  { background: #eff6ff; color: #1e40af; }
+  .mc-red   { background: #fef2f2; color: #991b1b; }
+  .comments-section { margin-top: 16px; }
+  .comment-item { padding: 10px 0; border-top: 1px solid #f0f0f0; }
+  .comment-staff { font-size: 12px; font-weight: 600; color: #888; margin-bottom: 3px; text-transform: capitalize; }
+  .comment-text { font-size: 13px; color: #333; }
+  h3.section-head { font-size: 13px; font-weight: 700; color: #555; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<div class="card" id="app">
+  <!-- rendered by JS -->
+</div>
+
+<script>
+const BRANCH = "Fitness Nation — Al Hudaiba";
+const STAFF = ["Reniel","Arun","Hakim","Sisira","Hafnas","Jared","Shaheen","Amrit"];
+const QUESTIONS = [
+  { id:"q1", title:"Technical fitness knowledge",   sub:"Understands training principles, anatomy, exercise programming and equipment." },
+  { id:"q2", title:"Client communication",          sub:"Explains clearly, listens actively and adapts to each member's needs." },
+  { id:"q3", title:"Punctuality and reliability",   sub:"Shows up on time, prepared and follows through on commitments." },
+  { id:"q4", title:"Team collaboration",            sub:"Works well with colleagues and contributes to a positive gym culture." },
+  { id:"q5", title:"Leadership potential",          sub:"Takes initiative, guides others and demonstrates an ownership mindset." },
+  { id:"q6", title:"Member satisfaction focus",     sub:"Goes the extra mile to ensure every member has an excellent experience." },
+  { id:"q7", title:"Attitude and work ethic",       sub:"Shows dedication, positivity and professionalism every day." },
+  { id:"q8", title:"Adaptability",                  sub:"Handles changing situations, schedules and challenges calmly." },
+];
+
+let evaluations = [];   // { staff, ratings:{q1..q8}, comment }
+let evaluated   = [];   // names already done
+let cur = { staff:"", ratings:{}, comment:"" };
+
+function available() { return STAFF.filter(s => !evaluated.includes(s)); }
+
+function render() {
+  if (evaluated.length === STAFF.length) { renderDone(); return; }
+  const app = document.getElementById("app");
+  const total = STAFF.length;
+  const done  = evaluated.length;
+  const pct   = Math.round((done / total) * 100);
+
+  let html = `
+    <div class="branch-row">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#555" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75L12 3l9 6.75V21a1 1 0 01-1 1H4a1 1 0 01-1-1V9.75z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 22V12h6v10"/>
+      </svg>
+      <div><div class="branch-label">Branch</div><div class="branch-name">${BRANCH}</div></div>
+    </div>
+
+    <div class="anon">🔒 This form is completely anonymous. Your identity will not be collected. Responses are used strictly for internal staff development and reviewed only by management.</div>
+
+    <div class="page-meta">
+      <span class="page-label">Evaluation ${done + 1} of ${total}</span>
+      <span class="page-label">${done} done</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>
+
+    <label class="field-label">Select colleague to evaluate</label>
+    <select id="staffSel" onchange="selectStaff(this.value)">
+      <option value="">— choose a colleague —</option>
+      ${available().map(s => `<option value="${s}" ${cur.staff===s?"selected":""}>${s}</option>`).join("")}
+    </select>`;
+
+  if (cur.staff) {
+    html += `<div class="section-divider">Rate each area — 1 (poor) to 5 (outstanding)</div>`;
+    QUESTIONS.forEach((q, i) => {
+      html += `<div class="q-block">
+        <div class="q-title">${i+1}. ${q.title}</div>
+        <div class="q-sub">${q.sub}</div>
+        <div class="rating-row">`;
+      for (let v = 1; v <= 5; v++) {
+        const active = cur.ratings[q.id] === v ? "active" : "";
+        html += `<button class="r-btn r-${v} ${active}" onclick="rate('${q.id}',${v})">${v}</button>`;
+      }
+      html += `</div>
+        <div class="r-scale-labels"><span>1 — Needs improvement</span><span>5 — Outstanding</span></div>
+      </div>`;
+    });
+
+    html += `<div class="section-divider">Additional comments (optional)</div>
+      <textarea id="commentBox" placeholder="Anything else you'd like to share about this colleague..." onchange="cur.comment=this.value" oninput="cur.comment=this.value">${cur.comment}</textarea>`;
+
+    const allRated = QUESTIONS.every(q => cur.ratings[q.id]);
+    const isLast   = available().length === 1;
+    html += `<p class="err" id="errMsg">Please rate all 8 areas before continuing.</p>
+      <button class="btn-next" onclick="next()">${isLast ? "Submit all evaluations ✓" : "Next colleague →"}</button>`;
+  }
+
+  app.innerHTML = html;
+}
+
+function selectStaff(val) {
+  cur = { staff: val, ratings: {}, comment: "" };
+  render();
+}
+
+function rate(qid, val) {
+  cur.ratings[qid] = val;
+  // update buttons without full re-render
+  const blocks = document.querySelectorAll(".q-block");
+  const idx = QUESTIONS.findIndex(q => q.id === qid);
+  if (idx < 0) return;
+  const btns = blocks[idx].querySelectorAll(".r-btn");
+  btns.forEach((b, i) => {
+    b.className = `r-btn r-${i+1}` + (i+1 === val ? " active" : "");
+  });
+  const err = document.getElementById("errMsg");
+  if (err) err.style.display = "none";
+}
+
+function next() {
+  const allRated = QUESTIONS.every(q => cur.ratings[q.id]);
+  if (!allRated) { document.getElementById("errMsg").style.display = "block"; return; }
+  evaluations.push({ staff: cur.staff, ratings: { ...cur.ratings }, comment: cur.comment });
+  evaluated.push(cur.staff);
+  cur = { staff: "", ratings: {}, comment: "" };
+  render();
+}
+
+function renderDone() {
+  // calculate averages
+  const scores = {};
+  STAFF.forEach(s => { scores[s] = { total: 0, count: 0, q5: 0 }; });
+  evaluations.forEach(ev => {
+    QUESTIONS.forEach(q => {
+      if (ev.ratings[q.id]) {
+        scores[ev.staff].total += ev.ratings[q.id];
+        scores[ev.staff].count++;
+      }
+    });
+    if (ev.ratings["q5"]) scores[ev.staff].q5 += ev.ratings["q5"];
+  });
+
+  const avgs = STAFF
+    .filter(s => scores[s].count > 0)
+    .map(s => ({ name: s, avg: scores[s].total / scores[s].count, q5: scores[s].q5 }))
+    .sort((a, b) => b.avg - a.avg);
+
+  const highest    = avgs[0];
+  const lowest     = avgs[avgs.length - 1];
+  const leader     = [...avgs].sort((a,b) => b.q5 - a.q5)[0];
+  const needsDev   = avgs.filter(s => s.avg < 3);
+  const comments   = evaluations.filter(e => e.comment.trim());
+
+  let html = `
+    <div class="done-icon">✅</div>
+    <div class="done-title">All evaluations submitted</div>
+    <div class="done-sub">Thank you. Every response is anonymous and has been recorded.</div>
+
+    <h3 class="section-head">Overall scores</h3>
+    ${avgs.map(s => `
+      <div class="score-row">
+        <span class="score-name">${s.name.toLowerCase()}</span>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:${Math.round((s.avg/5)*100)}%"></div></div>
+        <span class="score-val">${s.avg.toFixed(1)}/5</span>
+      </div>`).join("")}
+
+    <div class="metric-grid">
+      <div class="metric-card mc-green">
+        <div class="mlabel">Highest rated</div>
+        <div class="mval">${highest ? highest.name : "—"}</div>
+        <div class="msub">${highest ? highest.avg.toFixed(1)+"/5 avg" : ""}</div>
+      </div>
+      <div class="metric-card mc-amber">
+        <div class="mlabel">Needs attention</div>
+        <div class="mval">${lowest ? lowest.name : "—"}</div>
+        <div class="msub">${lowest ? lowest.avg.toFixed(1)+"/5 avg" : ""}</div>
+      </div>
+      <div class="metric-card mc-blue">
+        <div class="mlabel">Leadership potential</div>
+        <div class="mval">${leader ? leader.name : "—"}</div>
+        <div class="msub">Highest leadership score</div>
+      </div>
+      <div class="metric-card mc-red">
+        <div class="mlabel">1-on-1 recommended</div>
+        <div class="mval" style="font-size:13px">${needsDev.length ? needsDev.map(s=>s.name).join(", ") : "None 🎉"}</div>
+        <div class="msub">Average below 3.0</div>
+      </div>
+    </div>
+
+    ${comments.length ? `
+    <div class="comments-section">
+      <h3 class="section-head" style="margin-top:20px">Comments submitted</h3>
+      ${comments.map(e => `
+        <div class="comment-item">
+          <div class="comment-staff">${e.staff.toLowerCase()}</div>
+          <div class="comment-text">${e.comment}</div>
+        </div>`).join("")}
+    </div>` : ""}`;
+
+  document.getElementById("app").innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>
