@@ -71,6 +71,7 @@
 </div>
 
 <script>
+const WEBHOOK = "https://script.google.com/macros/s/AKfycbwY7Fw-Ip9uHKFiqga0wct2Yb7fTfmYuv2O99nZ01ZQWk3kSoGFVhWw9vCWcgQK11iAIA/exec";
 const BRANCH = "Fitness Nation — Al Hudaiba";
 const STAFF = ["Reniel","Arun","Hakim","Sisira","Hafnas","Jared","Shaheen","Amrit"];
 const QUESTIONS = [
@@ -176,6 +177,27 @@ function next() {
   render();
 }
 
+function generateSessionId() {
+  return "sess-" + Date.now() + "-" + Math.random().toString(36).slice(2,7);
+}
+
+async function submitToSheet() {
+  const payload = {
+    sessionId: generateSessionId(),
+    evaluations: evaluations
+  };
+  try {
+    await fetch(WEBHOOK, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  } catch(e) {
+    console.error("Webhook error:", e);
+  }
+}
+
 function renderDone() {
   // calculate averages
   const scores = {};
@@ -248,6 +270,7 @@ function renderDone() {
     </div>` : ""}`;
 
   document.getElementById("app").innerHTML = html;
+  submitToSheet();
 }
 
 render();
